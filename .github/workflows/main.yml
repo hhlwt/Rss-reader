@@ -1,0 +1,10 @@
+name: main
+on: push
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    steps:
+      - name: preparation
+        uses: actions/checkout@v2
+      - run: make install
+      - run: make lint
