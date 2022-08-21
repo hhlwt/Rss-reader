@@ -1,10 +1,11 @@
 import onChange from 'on-change';
 
-const handleError = (elements, value, prevValue) => {
+const handleError = (elements, value, prevValue, i18nInstance) => {
   if (!value && !prevValue) return;
 
   if (value && !prevValue) {
     elements.input.classList.add('is-invalid');
+    console.log(i18nInstance.t(value));
     return;
   }
 
@@ -13,10 +14,10 @@ const handleError = (elements, value, prevValue) => {
   }
 };
 
-const render = (elements) => (path, value, prevValue) => {
+const render = (elements, i18nInstance) => (path, value, prevValue) => {
   switch (path) {
-    case 'validateError':
-      handleError(elements, value, prevValue);
+    case 'validateErrorKey':
+      handleError(elements, value, prevValue, i18nInstance);
       break;
 
     case 'urls':
@@ -29,8 +30,8 @@ const render = (elements) => (path, value, prevValue) => {
   }
 };
 
-const makeObserver = (state, elements) => {
-  const watchedState = onChange(state, render(elements));
+const makeObserver = (state, elements, i18nInstance) => {
+  const watchedState = onChange(state, render(elements, i18nInstance));
   return watchedState;
 };
 
