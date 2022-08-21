@@ -1,24 +1,31 @@
 import onChange from 'on-change';
 
-const render = (elements) => (path, value, prevValue) => {
-  if (path === 'isValidUrl') {
-    if (value === false && prevValue === true) {
-      elements.input.classList.add('is-invalid');
-      return;
-    }
+const handleError = (elements, value, prevValue) => {
+  if (!value && !prevValue) return;
 
-    if (value === false && prevValue === false) {
-      return;
-    }
-
-    if (value === true && prevValue === false) {
-      elements.input.classList.remove('is-invalid');
-    }
+  if (value && !prevValue) {
+    elements.input.classList.add('is-invalid');
+    return;
   }
 
-  if (path === 'urls') {
-    elements.input.value = '';
-    elements.input.focus();
+  if (!value && prevValue) {
+    elements.input.classList.remove('is-invalid');
+  }
+};
+
+const render = (elements) => (path, value, prevValue) => {
+  switch (path) {
+    case 'validateError':
+      handleError(elements, value, prevValue);
+      break;
+
+    case 'urls':
+      elements.input.value = '';
+      elements.input.focus();
+      break;
+
+    default:
+      break;
   }
 };
 

@@ -9,9 +9,8 @@ export default () => {
   };
 
   const state = {
-    isValidUrl: true,
     urls: [],
-    errors: {},
+    validateError: null,
   };
 
   const watchedState = makeObserver(state, elements);
@@ -19,14 +18,15 @@ export default () => {
   elements.form.addEventListener('submit', (e) => {
     e.preventDefault();
     const url = elements.input.value;
-    const schema = yup.string().url().notOneOf(watchedState.urls);
+    const schema = yup.string().url('Ссылка должна быть валидным URL').notOneOf(watchedState.urls, 'RSS уже существует');
     schema.validate(url)
       .then((newUrl) => {
         watchedState.urls.push(newUrl);
-        watchedState.isValidUrl = true;
+        watchedState.validateError = '';
       })
-      .catch(() => {
-        watchedState.isValidUrl = false;
+      .catch((schemaEror) => {
+        watchedState.validateError = schemaEror.message;
+        throw new Error(schemaEror);
       });
   });
 };
