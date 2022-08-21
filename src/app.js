@@ -16,6 +16,7 @@ export default () => {
       form: document.querySelector('form'),
       input: document.querySelector('#url-input'),
       button: document.querySelector('[type="submit"]'),
+      inputFeedback: document.querySelector('.feedback'),
     };
 
     const state = {

@@ -1,16 +1,23 @@
 import onChange from 'on-change';
 
 const handleError = (elements, value, prevValue, i18nInstance) => {
-  if (!value && !prevValue) return;
+  if (!value && !prevValue) {
+    elements.inputFeedback.textContent = i18nInstance.t('successValidate');
+  }
 
   if (value && !prevValue) {
     elements.input.classList.add('is-invalid');
-    console.log(i18nInstance.t(value));
+    elements.inputFeedback.classList.remove('text-success');
+    elements.inputFeedback.classList.add('text-danger');
+    elements.inputFeedback.textContent = i18nInstance.t(value);
     return;
   }
 
   if (!value && prevValue) {
     elements.input.classList.remove('is-invalid');
+    elements.inputFeedback.classList.remove('text-danger');
+    elements.inputFeedback.classList.add('text-success');
+    elements.inputFeedback.textContent = i18nInstance.t('successValidate');
   }
 };
 
