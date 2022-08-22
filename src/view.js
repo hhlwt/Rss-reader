@@ -1,8 +1,16 @@
 import onChange from 'on-change';
 
 const handleError = (elements, value, prevValue, i18nInstance) => {
+  if (value === 'networkError') {
+    elements.inputFeedback.textContent = i18nInstance.t(value);
+    return;
+  }
+
   if (!value && !prevValue) {
+    elements.inputFeedback.classList.remove('text-danger');
+    elements.inputFeedback.classList.add('text-success');
     elements.inputFeedback.textContent = i18nInstance.t('successValidate');
+    return;
   }
 
   if (value && !prevValue) {
@@ -18,7 +26,10 @@ const handleError = (elements, value, prevValue, i18nInstance) => {
     elements.inputFeedback.classList.remove('text-danger');
     elements.inputFeedback.classList.add('text-success');
     elements.inputFeedback.textContent = i18nInstance.t('successValidate');
+    return;
   }
+
+  elements.inputFeedback.textContent = i18nInstance.t(value);
 };
 
 const render = (elements, i18nInstance) => (path, value, prevValue) => {

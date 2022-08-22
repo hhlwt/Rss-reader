@@ -1,5 +1,6 @@
-import { setLocale, string } from 'yup';
+import { string } from 'yup';
 import i18n from 'i18next';
+import axios from 'axios';
 import makeObserver from './view';
 import ru from './locales/ru';
 
@@ -26,28 +27,26 @@ export default () => {
 
     const watchedState = makeObserver(state, elements, i18nInstance);
 
-    setLocale({
-      mixed: {
-        notOneOf: () => ({ key: 'urlAlreadyExists' }),
-      },
-      string: {
-        url: () => ({ key: 'invalidUrl' }),
-      },
-    });
-
     elements.form.addEventListener('submit', (e) => {
       e.preventDefault();
-      const url = elements.input.value;
-      const schema = string().url().notOneOf(watchedState.urls);
-      schema.validate(url)
-        .then((newUrl) => {
-          watchedState.urls.push(newUrl);
+      const inputUrl = elements.input.value;
+      const schema = string().url('invalidUrl').notOneOf(watchedState.urls, 'urlAlreadyExists');
+      schema.validate(inputUrl)
+        .then((url) => axios.get(`https://allorigins.hexlet.app/get?disableCache=true&url=${url}`))
+        .then((response) => {
+          if (response.data.status.http_code !== 200) {
+            watchedState.validateErrorKey = 'invalidRss';
+            return;
+          }
+          watchedState.urls.push(inputUrl);
           watchedState.validateErrorKey = '';
         })
-        .catch((schemaEror) => {
-          const [{ key }] = schemaEror.errors;
-          watchedState.validateErrorKey = key;
-          throw new Error(i18nInstance.t(key));
+        .catch((error) => {
+          if (error.message === 'Network Error') {
+            watchedState.validateErrorKey = 'networkError';
+            return;
+          }
+          watchedState.validateErrorKey = error.message;
         });
     });
   });
