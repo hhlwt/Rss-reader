@@ -3,6 +3,9 @@ import i18n from 'i18next';
 import axios from 'axios';
 import makeObserver from './view';
 import ru from './locales/ru';
+import parseData from './parser';
+
+const proxifyUrl = (url) => `https://allorigins.hexlet.app/get?disableCache=true&url=${url}`;
 
 export default () => {
   const i18nInstance = i18n.createInstance();
@@ -15,38 +18,49 @@ export default () => {
   }).then(() => {
     const elements = {
       form: document.querySelector('form'),
+      button: document.querySelector('.rss-form .btn-primary'),
       input: document.querySelector('#url-input'),
-      button: document.querySelector('[type="submit"]'),
       inputFeedback: document.querySelector('.feedback'),
+      postsContainer: document.querySelector('.posts'),
+      feedsContainer: document.querySelector('.feeds'),
     };
 
     const state = {
+      processState: 'filling',
       urls: [],
       validateErrorKey: null,
+      rssContent: {
+        feeds: [],
+        posts: [],
+      },
     };
 
     const watchedState = makeObserver(state, elements, i18nInstance);
 
     elements.form.addEventListener('submit', (e) => {
       e.preventDefault();
+      watchedState.processState = 'processing';
       const inputUrl = elements.input.value;
       const schema = string().url('invalidUrl').notOneOf(watchedState.urls, 'urlAlreadyExists');
       schema.validate(inputUrl)
-        .then((url) => axios.get(`https://allorigins.hexlet.app/get?disableCache=true&url=${url}`))
+        .then((url) => axios.get(proxifyUrl(url)))
         .then((response) => {
-          if (response.data.status.http_code !== 200) {
-            watchedState.validateErrorKey = 'invalidRss';
-            return;
-          }
+          const urlContent = response.data.contents;
+          const [newFeed, newPosts] = parseData(urlContent);
+          watchedState.rssContent.feeds.push(newFeed);
+          watchedState.rssContent.posts.push(...newPosts);
           watchedState.urls.push(inputUrl);
           watchedState.validateErrorKey = '';
+          watchedState.processState = 'processed';
         })
         .catch((error) => {
           if (error.message === 'Network Error') {
             watchedState.validateErrorKey = 'networkError';
-            return;
+          } else {
+            watchedState.validateErrorKey = error.message;
           }
-          watchedState.validateErrorKey = error.message;
+
+          watchedState.processState = 'failed';
         });
     });
   });
