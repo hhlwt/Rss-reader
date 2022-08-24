@@ -64,4 +64,5 @@ export default () => {
         });
     });
   });
+  console.log(i18nInstance.t('invalidUrl'));
 };
