@@ -1,9 +1,11 @@
 import { string } from 'yup';
 import i18n from 'i18next';
 import axios from 'axios';
-import makeObserver from './view';
+import makeObserver from './view/watcher';
 import ru from './locales/ru';
 import parseData from './parser';
+import { extractFeed, extractPosts } from './extractContent';
+import checkNewPosts from './newPostsChecker';
 
 const proxifyUrl = (url) => `https://allorigins.hexlet.app/get?disableCache=true&url=${url}`;
 
@@ -45,13 +47,16 @@ export default () => {
       schema.validate(inputUrl)
         .then((url) => axios.get(proxifyUrl(url)))
         .then((response) => {
-          const urlContent = response.data.contents;
-          const [newFeed, newPosts] = parseData(urlContent);
-          watchedState.rssContent.feeds.push(newFeed);
-          watchedState.rssContent.posts.push(...newPosts);
+          const responseContent = response.data.contents;
+          const xmlContent = parseData(responseContent);
+          const newFeed = extractFeed(xmlContent);
+          const newPosts = extractPosts(xmlContent);
+          watchedState.rssContent.feeds.unshift(newFeed);
+          watchedState.rssContent.posts.unshift(...newPosts);
           watchedState.urls.push(inputUrl);
           watchedState.validateErrorKey = '';
           watchedState.processState = 'processed';
+          watchedState.processState = 'filling';
         })
         .catch((error) => {
           if (error.message === 'Network Error') {
@@ -61,8 +66,10 @@ export default () => {
           }
 
           watchedState.processState = 'failed';
+          watchedState.processState = 'filling';
         });
     });
+
+    checkNewPosts(watchedState, state);
   });
-  console.log(i18nInstance.t('invalidUrl'));
 };
