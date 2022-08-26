@@ -56,9 +56,11 @@ export const renderPosts = (elements, state) => {
     a.setAttribute('href', post.link);
     a.setAttribute('target', '_blank');
     a.setAttribute('rel', 'noopener noreferrer');
+    a.setAttribute('data-id', `${post.id}`);
     button.setAttribute('type', 'button');
     button.setAttribute('data-bs-toggle', 'modal');
     button.setAttribute('data-bs-target', '#modal');
+    button.setAttribute('data-id', `${post.id}`);
 
     a.textContent = post.title;
     button.textContent = 'Просмотр';
