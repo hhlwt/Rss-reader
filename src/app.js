@@ -29,10 +29,16 @@ export default () => {
     feedsContainer: document.querySelector('.feeds'),
     modalTitle: document.querySelector('.modal-title'),
     modalBody: document.querySelector('.modal-body'),
+    modalFullArcticle: document.querySelector('.full-article'),
   };
 
   const state = {
     processState: 'filling',
+    modalState: {
+      title: null,
+      body: null,
+      fullArticleLink: null,
+    },
     urls: [],
     validateErrorKey: null,
     rssContent: {

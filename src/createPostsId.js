@@ -1,9 +1,11 @@
 const createPostsId = (posts, initialId) => {
   let currentId = initialId;
 
-  const identifiedPosts = posts.map(({ link, title, description }) => {
+  const identifiedPosts = posts.map(({
+    link, title, description, read,
+  }) => {
     const identifiedPost = {
-      link, title, description, id: currentId,
+      link, title, description, read, id: currentId,
     };
     currentId += 1;
 

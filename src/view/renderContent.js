@@ -48,22 +48,44 @@ export const renderPosts = (elements, state) => {
     const li = document.createElement('li');
     const a = document.createElement('a');
     const button = document.createElement('button');
+    const aClassList = post.read ? ['fw-normal', 'link-secondary'] : ['fw-bold'];
 
     li.classList.add('list-group-item', 'd-flex', 'justify-content-between', 'align-items-start', 'border-0', 'border-end-0');
-    a.classList.add('fw-bold');
+    a.classList.add(...aClassList);
     button.classList.add('btn', 'btn-outline-primary', 'btn-sm');
 
     a.setAttribute('href', post.link);
     a.setAttribute('target', '_blank');
     a.setAttribute('rel', 'noopener noreferrer');
-    a.setAttribute('data-id', `${post.id}`);
+    a.setAttribute('data-id', post.id);
     button.setAttribute('type', 'button');
     button.setAttribute('data-bs-toggle', 'modal');
     button.setAttribute('data-bs-target', '#modal');
-    button.setAttribute('data-id', `${post.id}`);
+    button.setAttribute('data-id', post.id);
 
     a.textContent = post.title;
     button.textContent = 'Просмотр';
+
+    a.addEventListener('click', (e) => {
+      const articleId = Number(e.target.dataset.id);
+      e.target.classList.remove('fw-bold');
+      e.target.classList.add('fw-normal', 'link-secondary');
+      const currentArticle = state.rssContent.posts.find((arcticle) => arcticle.id === articleId);
+      currentArticle.read = true;
+    });
+
+    button.addEventListener('click', (e) => {
+      const articleId = Number(e.target.dataset.id);
+      const articleLinkElement = document.querySelector(`a[data-id="${articleId}"]`);
+      articleLinkElement.classList.remove('fw-bold');
+      articleLinkElement.classList.add('fw-normal', 'link-secondary');
+      const currentArticle = state.rssContent.posts.find((arcticle) => arcticle.id === articleId);
+      currentArticle.read = true;
+
+      elements.modalTitle.textContent = currentArticle.title;
+      elements.modalBody.textContent = currentArticle.description;
+      elements.modalFullArcticle.setAttribute('href', currentArticle.link);
+    });
 
     li.replaceChildren(a, button);
     return li;

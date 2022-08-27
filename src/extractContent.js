@@ -11,7 +11,9 @@ export const extractPosts = (xmlContent) => {
     const title = item.querySelector('title').textContent;
     const description = item.querySelector('description').textContent;
 
-    return { link, title, description };
+    return {
+      link, title, description, read: false,
+    };
   });
 
   return posts;
