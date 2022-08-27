@@ -34,11 +34,6 @@ export default () => {
 
   const state = {
     processState: 'filling',
-    modalState: {
-      title: null,
-      body: null,
-      fullArticleLink: null,
-    },
     urls: [],
     validateErrorKey: null,
     rssContent: {
@@ -67,7 +62,6 @@ export default () => {
         watchedState.urls.push(inputUrl);
         watchedState.validateErrorKey = '';
         watchedState.processState = 'processed';
-        watchedState.processState = 'filling';
       })
       .catch((error) => {
         if (error.message === 'Network Error') {
@@ -77,7 +71,6 @@ export default () => {
         }
 
         watchedState.processState = 'failed';
-        watchedState.processState = 'filling';
       });
   });
 

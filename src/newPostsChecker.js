@@ -29,13 +29,10 @@ const checkNewPosts = (watcher, state) => {
     Promise.all(postGroupPromises).then((fulfilledGroups) => {
       const updatedPosts = _.flatten(fulfilledGroups);
       const oldPosts = state.rssContent.posts;
-
       const newPosts = comparePostsByLink(updatedPosts, oldPosts);
       if (newPosts.length !== 0) {
         const identifiedNewPosts = createPostsId(newPosts, state.rssContent.posts.length);
         identifiedNewPosts.forEach((post) => watcher.rssContent.posts.unshift(post));
-        watcher.processState = 'processed';
-        watcher.processState = 'filling';
       }
     });
     checkNewPosts(watcher, state);

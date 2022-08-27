@@ -1,12 +1,6 @@
 import onChange from 'on-change';
 import { renderFeeds, renderPosts } from './renderContent';
 
-const renderModal = (elements, state) => {
-  elements.modalTitle.textContent = state.modalState.title;
-  elements.modalBody.textContent = state.modalState.body;
-  elements.modalFullArcticle.setAttribute('href', state.modalState.fullArticleLink);
-};
-
 const handleProcessState = (elements, i18nInstance, state, value) => {
   switch (value) {
     case 'processing':
@@ -18,9 +12,6 @@ const handleProcessState = (elements, i18nInstance, state, value) => {
       break;
 
     case 'processed':
-      renderFeeds(elements, state);
-      renderPosts(elements, state);
-      renderModal(elements, state);
       elements.inputFeedback.classList.add('text-success');
       elements.inputFeedback.textContent = i18nInstance.t('successValidate');
       elements.input.value = '';
@@ -48,6 +39,16 @@ const makeObserver = (state, elements, i18nInstance) => {
   const watchedState = onChange(state, (path, value) => {
     if (path === 'processState') {
       handleProcessState(elements, i18nInstance, state, value);
+      return;
+    }
+
+    if (path === 'rssContent.feeds') {
+      renderFeeds(elements, state);
+      return;
+    }
+
+    if (path === 'rssContent.posts') {
+      renderPosts(elements, state);
     }
   });
 
