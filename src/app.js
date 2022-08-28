@@ -74,5 +74,5 @@ export default () => {
       });
   });
 
-  checkNewPosts(watchedState, state);
+  checkNewPosts(watchedState);
 };

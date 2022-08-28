@@ -1,14 +1,27 @@
-export const renderFeeds = (elements, state) => {
+const getContentSubContainers = (contentName) => {
+  if (document.querySelector(`.${contentName} card`)) {
+    return document.querySelector(`.${contentName} list-group`);
+  }
+
   const card = document.createElement('div');
   const cardBody = document.createElement('div');
   const cardTitle = document.createElement('h2');
-  const feedsList = document.createElement('ul');
+  const contentList = document.createElement('ul');
 
   card.classList.add('card', 'border-0');
   cardBody.classList.add('card-body');
   cardTitle.classList.add('card-title', 'h4');
-  cardTitle.textContent = 'Фиды';
-  feedsList.classList.add('list-group', 'border-0', 'rounded-0');
+  cardTitle.textContent = contentName === 'posts' ? 'Посты' : 'Фиды';
+  contentList.classList.add('list-group', 'border-0', 'rounded-0');
+
+  cardBody.replaceChildren(cardTitle);
+  card.replaceChildren(cardBody, contentList);
+
+  return [contentList, card];
+};
+
+export const renderFeeds = (elements, state) => {
+  const [feedsList, card] = getContentSubContainers('feeds');
 
   const feeds = state.rssContent.feeds.map((feed) => {
     const li = document.createElement('li');
@@ -26,23 +39,12 @@ export const renderFeeds = (elements, state) => {
     return li;
   });
 
-  cardBody.replaceChildren(cardTitle);
   feedsList.replaceChildren(...feeds);
-  card.replaceChildren(cardBody, feedsList);
   elements.feedsContainer.replaceChildren(card);
 };
 
 export const renderPosts = (elements, state) => {
-  const card = document.createElement('div');
-  const cardBody = document.createElement('div');
-  const cardTitle = document.createElement('h2');
-  const feedsList = document.createElement('ul');
-
-  card.classList.add('card', 'border-0');
-  cardBody.classList.add('card-body');
-  cardTitle.classList.add('card-title', 'h4');
-  cardTitle.textContent = 'Посты';
-  feedsList.classList.add('list-group', 'border-0', 'rounded-0');
+  const [postsList, card] = getContentSubContainers('posts');
 
   const posts = state.rssContent.posts.map((post) => {
     const li = document.createElement('li');
@@ -69,7 +71,7 @@ export const renderPosts = (elements, state) => {
     a.addEventListener('click', (e) => {
       const articleId = Number(e.target.dataset.id);
       e.target.classList.remove('fw-bold');
-      e.target.classList.add('fw-normal', 'link-secondary');
+      e.target.classList.add('fw-normal', 'link-secondary'); // По урокам MVC помню, что в контроллерах не можем менять представление, но тут контроллер создается сам по себе в view слое. Надеюсь, что так можно, других вариантов пока не нашел :)
       const currentArticle = state.rssContent.posts.find((arcticle) => arcticle.id === articleId);
       currentArticle.read = true;
     });
@@ -91,8 +93,6 @@ export const renderPosts = (elements, state) => {
     return li;
   });
 
-  cardBody.replaceChildren(cardTitle);
-  feedsList.replaceChildren(...posts);
-  card.replaceChildren(cardBody, feedsList);
+  postsList.replaceChildren(...posts);
   elements.postsContainer.replaceChildren(card);
 };

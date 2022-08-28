@@ -14,9 +14,9 @@ const comparePostsByLink = (updatedPosts, oldPosts) => {
   return newPosts;
 };
 
-const checkNewPosts = (watcher, state) => {
+const checkNewPosts = (watcher) => {
   setTimeout(() => {
-    const postGroupPromises = state.urls.map((url) => {
+    const postGroupPromises = watcher.urls.map((url) => {
       const promise = axios.get(proxifyUrl(url))
         .then((response) => {
           const responseContent = response.data.contents;
@@ -28,14 +28,14 @@ const checkNewPosts = (watcher, state) => {
     });
     Promise.all(postGroupPromises).then((fulfilledGroups) => {
       const updatedPosts = _.flatten(fulfilledGroups);
-      const oldPosts = state.rssContent.posts;
+      const oldPosts = watcher.rssContent.posts;
       const newPosts = comparePostsByLink(updatedPosts, oldPosts);
       if (newPosts.length !== 0) {
-        const identifiedNewPosts = createPostsId(newPosts, state.rssContent.posts.length);
+        const identifiedNewPosts = createPostsId(newPosts, watcher.rssContent.posts.length);
         identifiedNewPosts.forEach((post) => watcher.rssContent.posts.unshift(post));
       }
     });
-    checkNewPosts(watcher, state);
+    checkNewPosts(watcher);
   }, 5000);
 };
 
