@@ -21,22 +21,25 @@ const checkNewPosts = (watcher) => {
           const responseContent = response.data.contents;
           const { newPosts } = parseData(responseContent);
           return newPosts;
-        }).catch();
+        })
+        .catch();
       return promise;
     });
-    Promise.all(postGroupPromises).then((fulfilledGroups) => {
-      const updatedPosts = _.flatten(fulfilledGroups);
-      const oldPosts = watcher.rssContent.posts;
-      const newPosts = comparePostsByLink(updatedPosts, oldPosts);
-      if (newPosts.length !== 0) {
-        const identifiedNewPosts = newPosts.map((post) => {
-          post.id = _.uniqueId();
-          return post;
-        });
-        identifiedNewPosts.forEach((post) => watcher.rssContent.posts.unshift(post));
-      }
-    });
-    checkNewPosts(watcher);
+    Promise.all(postGroupPromises)
+      .then((fulfilledGroups) => {
+        const updatedPosts = _.flatten(fulfilledGroups);
+        const oldPosts = watcher.rssContent.posts;
+        const newPosts = comparePostsByLink(updatedPosts, oldPosts);
+        if (newPosts.length !== 0) {
+          const identifiedNewPosts = newPosts.map((post) => {
+            post.id = _.uniqueId();
+            return post;
+          });
+          identifiedNewPosts.forEach((post) => watcher.rssContent.posts.unshift(post));
+        }
+        checkNewPosts(watcher);
+      })
+      .catch(() => checkNewPosts(watcher));
   }, 5000);
 };
 
