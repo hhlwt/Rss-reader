@@ -1,14 +1,11 @@
 import { string } from 'yup';
+import _ from 'lodash';
 import i18n from 'i18next';
 import axios from 'axios';
 import makeObserver from './view/watcher';
 import ru from './locales/ru';
 import parseData from './parser';
-import { extractFeed, extractPosts } from './extractContent';
 import checkNewPosts from './newPostsChecker';
-import createPostsId from './createPostsId';
-
-const proxifyUrl = (url) => `https://allorigins.hexlet.app/get?disableCache=true&url=${url}`;
 
 export default () => {
   const i18nInstance = i18n.createInstance();
@@ -34,6 +31,7 @@ export default () => {
 
   const state = {
     processState: 'filling',
+    modal: {},
     urls: [],
     validateErrorKey: null,
     rssContent: {
@@ -44,19 +42,38 @@ export default () => {
 
   const watchedState = makeObserver(state, elements, i18nInstance);
 
+  elements.postsContainer.addEventListener('click', (e) => {
+    const articleId = e.target.dataset.id;
+    if (!articleId) return;
+    const clickedPost = state.rssContent.posts.find(({ id }) => id === articleId);
+    clickedPost.read = true;
+    watchedState.modal = {
+      clickedPostElement: document.querySelector(`a[data-id="${articleId}"]`),
+      title: clickedPost.title,
+      description: clickedPost.description,
+      link: clickedPost.link,
+    };
+  });
+
   elements.form.addEventListener('submit', (e) => {
     e.preventDefault();
     watchedState.processState = 'processing';
     const inputUrl = elements.input.value;
     const schema = string().url('invalidUrl').notOneOf(watchedState.urls, 'urlAlreadyExists');
     schema.validate(inputUrl)
-      .then((url) => axios.get(proxifyUrl(url)))
+      .then((url) => {
+        const proxifedUrl = new URL('https://allorigins.hexlet.app/get');
+        proxifedUrl.searchParams.set('disableCache', 'true');
+        proxifedUrl.searchParams.set('url', url);
+        return axios.get(proxifedUrl);
+      })
       .then((response) => {
         const responseContent = response.data.contents;
-        const xmlContent = parseData(responseContent);
-        const newFeed = extractFeed(xmlContent);
-        const newPosts = extractPosts(xmlContent);
-        const identifiedNewPosts = createPostsId(newPosts, state.rssContent.posts.length);
+        const { newFeed, newPosts } = parseData(responseContent);
+        const identifiedNewPosts = newPosts.map((post) => {
+          post.id = _.uniqueId();
+          return post;
+        });
         watchedState.rssContent.feeds.unshift(newFeed);
         watchedState.rssContent.posts.unshift(...identifiedNewPosts);
         watchedState.urls.push(inputUrl);

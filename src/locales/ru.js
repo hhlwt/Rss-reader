@@ -5,5 +5,6 @@ export default {
     successValidate: 'RSS успешно загружен',
     invalidRss: 'Ресурс не содержит валидный RSS',
     networkError: 'Ошибка сети',
+    processing: 'Загрузка RSS...',
   },
 };

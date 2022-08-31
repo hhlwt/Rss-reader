@@ -1,5 +1,5 @@
 import onChange from 'on-change';
-import { renderFeeds, renderPosts } from './renderContent';
+import { renderFeeds, renderPosts, renderModal } from './renderContent';
 
 const handleProcessState = (elements, i18nInstance, state, value) => {
   switch (value) {
@@ -7,11 +7,13 @@ const handleProcessState = (elements, i18nInstance, state, value) => {
       elements.button.disabled = true;
       elements.input.classList.remove('is-invalid');
       elements.inputFeedback.classList.remove('text-danger', 'text-success');
-      elements.inputFeedback.textContent = '';
+      elements.inputFeedback.classList.add('text-info');
+      elements.inputFeedback.textContent = i18nInstance.t('processing');
       elements.input.setAttribute('readonly', 'true');
       break;
 
     case 'processed':
+      elements.inputFeedback.classList.remove('text-info');
       elements.inputFeedback.classList.add('text-success');
       elements.inputFeedback.textContent = i18nInstance.t('successValidate');
       elements.input.value = '';
@@ -21,6 +23,7 @@ const handleProcessState = (elements, i18nInstance, state, value) => {
       break;
 
     case 'failed':
+      elements.inputFeedback.classList.remove('text-info');
       if (state.validateErrorKey === 'invalidUrl' || state.validateErrorKey === 'urlAlreadyExists') {
         elements.input.classList.add('is-invalid');
       }
@@ -49,6 +52,11 @@ const makeObserver = (state, elements, i18nInstance) => {
 
     if (path === 'rssContent.posts') {
       renderPosts(elements, state);
+      return;
+    }
+
+    if (path === 'modal') {
+      renderModal(elements, state);
     }
   });
 

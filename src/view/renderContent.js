@@ -68,31 +68,18 @@ export const renderPosts = (elements, state) => {
     a.textContent = post.title;
     button.textContent = 'Просмотр';
 
-    a.addEventListener('click', (e) => {
-      const articleId = Number(e.target.dataset.id);
-      e.target.classList.remove('fw-bold');
-      e.target.classList.add('fw-normal', 'link-secondary'); // По урокам MVC помню, что в контроллерах не можем менять представление, но тут контроллер создается сам по себе в view слое. Надеюсь, что так можно, других вариантов пока не нашел :)
-      const currentArticle = state.rssContent.posts.find((arcticle) => arcticle.id === articleId);
-      currentArticle.read = true;
-    });
-
-    button.addEventListener('click', (e) => {
-      const articleId = Number(e.target.dataset.id);
-      const articleLinkElement = document.querySelector(`a[data-id="${articleId}"]`);
-      articleLinkElement.classList.remove('fw-bold');
-      articleLinkElement.classList.add('fw-normal', 'link-secondary');
-      const currentArticle = state.rssContent.posts.find((arcticle) => arcticle.id === articleId);
-      currentArticle.read = true;
-
-      elements.modalTitle.textContent = currentArticle.title;
-      elements.modalBody.textContent = currentArticle.description;
-      elements.modalFullArcticle.setAttribute('href', currentArticle.link);
-    });
-
     li.replaceChildren(a, button);
     return li;
   });
 
   postsList.replaceChildren(...posts);
   elements.postsContainer.replaceChildren(card);
+};
+
+export const renderModal = (elements, state) => {
+  state.modal.clickedPostElement.classList.remove('fw-bold');
+  state.modal.clickedPostElement.classList.add('fw-normal', 'link-secondary');
+  elements.modalTitle.textContent = state.modal.title;
+  elements.modalBody.textContent = state.modal.description;
+  elements.modalFullArcticle.setAttribute('href', state.modal.link);
 };

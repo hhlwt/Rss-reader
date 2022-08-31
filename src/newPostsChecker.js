@@ -1,10 +1,6 @@
 import _ from 'lodash';
 import axios from 'axios';
 import parseData from './parser';
-import { extractPosts } from './extractContent';
-import createPostsId from './createPostsId';
-
-const proxifyUrl = (url) => `https://allorigins.hexlet.app/get?disableCache=true&url=${url}`;
 
 const comparePostsByLink = (updatedPosts, oldPosts) => {
   const newPosts = updatedPosts.filter((post) => {
@@ -17,12 +13,14 @@ const comparePostsByLink = (updatedPosts, oldPosts) => {
 const checkNewPosts = (watcher) => {
   setTimeout(() => {
     const postGroupPromises = watcher.urls.map((url) => {
-      const promise = axios.get(proxifyUrl(url))
+      const proxifedUrl = new URL('https://allorigins.hexlet.app/get');
+      proxifedUrl.searchParams.set('disableCache', 'true');
+      proxifedUrl.searchParams.set('url', url);
+      const promise = axios.get(proxifedUrl)
         .then((response) => {
           const responseContent = response.data.contents;
-          const xmlContent = parseData(responseContent);
-          const posts = extractPosts(xmlContent);
-          return posts;
+          const { newPosts } = parseData(responseContent);
+          return newPosts;
         }).catch();
       return promise;
     });
@@ -31,7 +29,10 @@ const checkNewPosts = (watcher) => {
       const oldPosts = watcher.rssContent.posts;
       const newPosts = comparePostsByLink(updatedPosts, oldPosts);
       if (newPosts.length !== 0) {
-        const identifiedNewPosts = createPostsId(newPosts, watcher.rssContent.posts.length);
+        const identifiedNewPosts = newPosts.map((post) => {
+          post.id = _.uniqueId();
+          return post;
+        });
         identifiedNewPosts.forEach((post) => watcher.rssContent.posts.unshift(post));
       }
     });
