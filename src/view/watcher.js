@@ -46,12 +46,12 @@ const makeObserver = (state, elements, i18nInstance) => {
     }
 
     if (path === 'rssContent.feeds') {
-      renderFeeds(elements, state);
+      renderFeeds(elements, state, i18nInstance);
       return;
     }
 
     if (path === 'rssContent.posts') {
-      renderPosts(elements, state);
+      renderPosts(elements, state, i18nInstance);
       return;
     }
 

@@ -1,4 +1,4 @@
-const getContentSubContainers = (contentName) => {
+const getContentSubContainers = (contentName, i18nInstance) => {
   if (document.querySelector(`.${contentName} card`)) {
     return document.querySelector(`.${contentName} list-group`);
   }
@@ -11,7 +11,7 @@ const getContentSubContainers = (contentName) => {
   card.classList.add('card', 'border-0');
   cardBody.classList.add('card-body');
   cardTitle.classList.add('card-title', 'h4');
-  cardTitle.textContent = contentName === 'posts' ? 'Посты' : 'Фиды';
+  cardTitle.textContent = contentName === 'posts' ? i18nInstance.t('rssContent.postsTitle') : i18nInstance.t('rssContent.feedsTitle');
   contentList.classList.add('list-group', 'border-0', 'rounded-0');
 
   cardBody.replaceChildren(cardTitle);
@@ -20,8 +20,8 @@ const getContentSubContainers = (contentName) => {
   return [contentList, card];
 };
 
-export const renderFeeds = (elements, state) => {
-  const [feedsList, card] = getContentSubContainers('feeds');
+export const renderFeeds = (elements, state, i18nInstance) => {
+  const [feedsList, card] = getContentSubContainers('feeds', i18nInstance);
 
   const feeds = state.rssContent.feeds.map((feed) => {
     const li = document.createElement('li');
@@ -43,8 +43,8 @@ export const renderFeeds = (elements, state) => {
   elements.feedsContainer.replaceChildren(card);
 };
 
-export const renderPosts = (elements, state) => {
-  const [postsList, card] = getContentSubContainers('posts');
+export const renderPosts = (elements, state, i18nInstance) => {
+  const [postsList, card] = getContentSubContainers('posts', i18nInstance);
 
   const posts = state.rssContent.posts.map((post) => {
     const li = document.createElement('li');
@@ -66,7 +66,7 @@ export const renderPosts = (elements, state) => {
     button.setAttribute('data-id', post.id);
 
     a.textContent = post.title;
-    button.textContent = 'Просмотр';
+    button.textContent = i18nInstance.t('rssContent.postButton');
 
     li.replaceChildren(a, button);
     return li;

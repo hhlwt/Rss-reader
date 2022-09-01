@@ -6,5 +6,10 @@ export default {
     invalidRss: 'Ресурс не содержит валидный RSS',
     networkError: 'Ошибка сети',
     processing: 'Загрузка RSS...',
+    rssContent: {
+      postButton: 'Просмотр',
+      postsTitle: 'Посты',
+      feedsTitle: 'Фиды',
+    },
   },
 };
