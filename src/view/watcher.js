@@ -40,23 +40,25 @@ const handleProcessState = (elements, i18nInstance, state, value) => {
 
 const makeObserver = (state, elements, i18nInstance) => {
   const watchedState = onChange(state, (path, value) => {
-    if (path === 'processState') {
-      handleProcessState(elements, i18nInstance, state, value);
-      return;
-    }
+    switch (path) {
+      case 'processState':
+        handleProcessState(elements, i18nInstance, state, value);
+        break;
 
-    if (path === 'rssContent.feeds') {
-      renderFeeds(elements, state, i18nInstance);
-      return;
-    }
+      case 'rssContent.feeds':
+        renderFeeds(elements, state, i18nInstance);
+        break;
 
-    if (path === 'rssContent.posts') {
-      renderPosts(elements, state, i18nInstance);
-      return;
-    }
+      case 'rssContent.posts':
+        renderPosts(elements, state, i18nInstance);
+        break;
 
-    if (path === 'modal') {
-      renderModal(elements, state);
+      case 'modal':
+        renderModal(elements, state);
+        break;
+
+      default:
+        break;
     }
   });
 

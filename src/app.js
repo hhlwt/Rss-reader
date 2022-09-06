@@ -5,6 +5,7 @@ import axios from 'axios';
 import makeObserver from './view/watcher';
 import ru from './locales/ru';
 import parseData from './parser';
+import proxifyUrl from './proxifyUrl';
 import checkNewPosts from './newPostsChecker';
 
 export default () => {
@@ -62,9 +63,8 @@ export default () => {
     const schema = string().url('invalidUrl').notOneOf(watchedState.urls, 'urlAlreadyExists');
     schema.validate(inputUrl)
       .then((url) => {
-        const proxifedUrl = new URL('https://allorigins.hexlet.app/get');
-        proxifedUrl.searchParams.set('disableCache', 'true');
-        proxifedUrl.searchParams.set('url', url);
+        const proxifedUrl = proxifyUrl(url);
+
         return axios.get(proxifedUrl);
       })
       .then((response) => {

@@ -36,6 +36,7 @@ export const renderFeeds = (elements, state, i18nInstance) => {
     p.textContent = feed.description;
 
     li.replaceChildren(h3, p);
+
     return li;
   });
 
@@ -69,6 +70,7 @@ export const renderPosts = (elements, state, i18nInstance) => {
     button.textContent = i18nInstance.t('rssContent.postButton');
 
     li.replaceChildren(a, button);
+
     return li;
   });
 

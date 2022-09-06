@@ -16,6 +16,7 @@ const extractPosts = (xmlContent) => {
 const extractFeed = (xmlContent) => {
   const title = xmlContent.querySelector('channel > title').textContent;
   const description = xmlContent.querySelector('channel > description').textContent;
+
   return { title, description };
 };
 
