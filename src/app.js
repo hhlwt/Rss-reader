@@ -31,8 +31,11 @@ export default () => {
   };
 
   const state = {
+    uiState: {
+      readPostsIds: [],
+      modal: {},
+    },
     processState: 'filling',
-    modal: {},
     urls: [],
     validateErrorKey: null,
     rssContent: {
@@ -47,8 +50,8 @@ export default () => {
     const articleId = e.target.dataset.id;
     if (!articleId) return;
     const clickedPost = state.rssContent.posts.find(({ id }) => id === articleId);
-    clickedPost.read = true;
-    watchedState.modal = {
+    watchedState.uiState.readPostsIds.push(articleId);
+    watchedState.uiState.modal = {
       clickedPostElement: document.querySelector(`a[data-id="${articleId}"]`),
       title: clickedPost.title,
       description: clickedPost.description,

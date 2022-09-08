@@ -53,7 +53,7 @@ const makeObserver = (state, elements, i18nInstance) => {
         renderPosts(elements, state, i18nInstance);
         break;
 
-      case 'modal':
+      case 'uiState.modal':
         renderModal(elements, state);
         break;
 

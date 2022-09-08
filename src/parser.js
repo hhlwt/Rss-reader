@@ -6,7 +6,7 @@ const extractPosts = (xmlContent) => {
     const description = item.querySelector('description').textContent;
 
     return {
-      link, title, description, read: false,
+      link, title, description,
     };
   });
 

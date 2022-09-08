@@ -51,7 +51,7 @@ export const renderPosts = (elements, state, i18nInstance) => {
     const li = document.createElement('li');
     const a = document.createElement('a');
     const button = document.createElement('button');
-    const aClassList = post.read ? ['fw-normal', 'link-secondary'] : ['fw-bold'];
+    const aClassList = state.uiState.readPostsIds.includes(post.id) ? ['fw-normal', 'link-secondary'] : ['fw-bold'];
 
     li.classList.add('list-group-item', 'd-flex', 'justify-content-between', 'align-items-start', 'border-0', 'border-end-0');
     a.classList.add(...aClassList);
@@ -79,9 +79,9 @@ export const renderPosts = (elements, state, i18nInstance) => {
 };
 
 export const renderModal = (elements, state) => {
-  state.modal.clickedPostElement.classList.remove('fw-bold');
-  state.modal.clickedPostElement.classList.add('fw-normal', 'link-secondary');
-  elements.modalTitle.textContent = state.modal.title;
-  elements.modalBody.textContent = state.modal.description;
-  elements.modalFullArcticle.setAttribute('href', state.modal.link);
+  state.uiState.modal.clickedPostElement.classList.remove('fw-bold');
+  state.uiState.modal.clickedPostElement.classList.add('fw-normal', 'link-secondary');
+  elements.modalTitle.textContent = state.uiState.modal.title;
+  elements.modalBody.textContent = state.uiState.modal.description;
+  elements.modalFullArcticle.setAttribute('href', state.uiState.modal.link);
 };
