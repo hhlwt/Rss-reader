@@ -51,7 +51,7 @@ export const renderPosts = (elements, state, i18nInstance) => {
     const li = document.createElement('li');
     const a = document.createElement('a');
     const button = document.createElement('button');
-    const aClassList = state.uiState.readPostsIds.includes(post.id) ? ['fw-normal', 'link-secondary'] : ['fw-bold'];
+    const aClassList = state.uiState.readPostsIds.has(post.id) ? ['fw-normal', 'link-secondary'] : ['fw-bold'];
 
     li.classList.add('list-group-item', 'd-flex', 'justify-content-between', 'align-items-start', 'border-0', 'border-end-0');
     a.classList.add(...aClassList);
