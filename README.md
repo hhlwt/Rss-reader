@@ -10,7 +10,7 @@
 <h2>Installation:</h2>
 
 ```
-$ git clone git@github.com:hhlwt/frontend-project-lvl3.git
+$ git clone git@github.com:hhlwt/Rss-reader.git
 $ make install
 $ make build
 $ make develop
