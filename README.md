@@ -9,8 +9,10 @@
 
 ![main](https://user-images.githubusercontent.com/103096812/214111888-08bb0c9f-4fe3-46a4-b0d0-ae8ad1de18e8.png)<br>
 
-![rssFeed](https://user-images.githubusercontent.com/103096812/214111912-e0d567f9-08c4-4c02-a9b6-3b985e181a3b.png)
-![rssModal](https://user-images.githubusercontent.com/103096812/214111923-73b60372-5bca-428e-a8e5-04ed8ebfc7a1.png)
+![rssFeed](https://user-images.githubusercontent.com/103096812/214111912-e0d567f9-08c4-4c02-a9b6-3b985e181a3b.png)<br>
+
+![rssModal](https://user-images.githubusercontent.com/103096812/214111923-73b60372-5bca-428e-a8e5-04ed8ebfc7a1.png)<br>
+
 
 <h2>Installation:</h2>
 
